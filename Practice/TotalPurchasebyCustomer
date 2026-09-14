@@ -1,0 +1,12 @@
+# Initialize Spark session
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+spark = SparkSession.builder.appName('Spark Playground').getOrCreate()
+
+
+
+df = spark.read.format('csv').option('inferSchema',True).option('header',True).load('/datasets/customer_purchases.csv')
+
+df_result = df.groupby(col("customer_id")).agg(sum(col("purchase_amount")).alias('total_purchase')).orderBy(col("customer_id"))
+
+display(df_result)
